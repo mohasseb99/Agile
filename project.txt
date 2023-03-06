@@ -1,0 +1,87 @@
+import sys
+import time
+import RPi.GPIO as GPIO
+sensor1=14
+sensor2=23
+
+def object_detected(channel):
+    if GPIO.input(sensor1) == 0 and GPIO.input(sensor2) == 0:
+        p.ChangeDutyCycle(100)
+        GPIO.output(a, 1)
+        GPIO.output(b, 1)
+        GPIO.output(c, 0)
+        GPIO.output(d, 1)
+        GPIO.output(e, 1)
+        GPIO.output(f, 0)
+        GPIO.output(g, 1)
+    elif GPIO.input(sensor1) == 0:
+        p.ChangeDutyCycle(0)
+        GPIO.output(a, 0)
+        GPIO.output(b, 1)
+        GPIO.output(c, 1)
+        GPIO.output(d, 0)
+        GPIO.output(e, 0)
+        GPIO.output(f, 0)
+        GPIO.output(g, 0)
+    elif GPIO.input(sensor2) == 0:
+        p.ChangeDutyCycle(0)
+        GPIO.output(a, 0)
+        GPIO.output(b, 1)
+        GPIO.output(c, 1)
+        GPIO.output(d, 0)
+        GPIO.output(e, 0)
+        GPIO.output(f, 0)
+        GPIO.output(g, 0)
+    else:
+        p.ChangeDutyCycle(20)
+        GPIO.output(a, 1)
+        GPIO.output(b, 1)
+        GPIO.output(c, 1)
+        GPIO.output(d, 1)
+        GPIO.output(e, 1)
+        GPIO.output(f, 1)
+        GPIO.output(g, 0)
+
+led=18
+a=27
+b=17
+c=4
+d=3
+e=2
+f=22
+g=10
+
+# setup pins
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(led, GPIO.OUT)
+GPIO.setup(sensor1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(sensor2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(a, GPIO.OUT)
+GPIO.setup(b, GPIO.OUT)
+GPIO.setup(c, GPIO.OUT)
+GPIO.setup(d, GPIO.OUT)
+GPIO.setup(e, GPIO.OUT)
+GPIO.setup(f, GPIO.OUT)
+GPIO.setup(g, GPIO.OUT)
+GPIO.output(g, 0)
+GPIO.output(a, 1)
+GPIO.output(b, 1)
+GPIO.output(c, 1)
+GPIO.output(d, 1)
+GPIO.output(e, 1)
+GPIO.output(f, 1)
+p = GPIO.PWM(led, 1000)
+p.start(0)
+p.ChangeDutyCycle(10)
+    
+try:
+ 
+     GPIO.add_event_detect(sensor1,GPIO.BOTH,callback=object_detected)
+     GPIO.add_event_detect(sensor2,GPIO.BOTH,callback=object_detected)
+
+     while True:
+         time.sleep(0.01)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+    sys.exit()
